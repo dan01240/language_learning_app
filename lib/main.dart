@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'features/video_player/video_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MaterialApp(home: VideoScreen()));
 }
 
 class MyApp extends StatelessWidget {
