@@ -47,13 +47,29 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.bookmark),
-            onPressed: () => context.go(AppConstants.savedWordsRoute),
+            onPressed: () {
+              // 新しい画面に切り替え
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const SavedWordScreen(),
+                ),
+              );
+            },
             tooltip: '保存した単語',
           ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              // TODO: 設定画面に遷移
+              // 設定画面に遷移
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder:
+                      (context) => Scaffold(
+                        appBar: AppBar(title: const Text('設定')),
+                        body: const Center(child: Text('設定画面は開発中です')),
+                      ),
+                ),
+              );
             },
             tooltip: '設定',
           ),
@@ -105,8 +121,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
-                  onPressed:
-                      () => _openVideo(_extractVideoId(_urlController.text)),
+                  onPressed: () {
+                    final videoId = _extractVideoId(_urlController.text);
+                    if (videoId.isNotEmpty) {
+                      _openVideo(videoId);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('有効なビデオIDを入力してください')),
+                      );
+                    }
+                  },
                   child: const Text('開く'),
                 ),
               ],
@@ -193,14 +217,15 @@ class _HomeScreenState extends State<HomeScreen> {
     // URLからIDを抽出するロジック
     if (url.isEmpty) return '';
 
-    // すでにIDのみの場合
-    if (url.length == 11 && !url.contains('/') && !url.contains('.')) {
+    // すでにIDのみの場合（11文字の英数字）
+    final validIdPattern = RegExp(r'^[a-zA-Z0-9_-]{11}$');
+    if (validIdPattern.hasMatch(url)) {
       return url;
     }
 
     // youtube.com/watch?v=VIDEO_ID 形式
     final regExpWatch = RegExp(
-      r'(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\?#]+)',
+      r'(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})',
     );
     final matchWatch = regExpWatch.firstMatch(url);
     if (matchWatch != null && matchWatch.groupCount >= 1) {
@@ -208,13 +233,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     // youtu.be/VIDEO_ID 形式
-    final regExpShort = RegExp(r'youtu\.be\/([^&\?#]+)');
+    final regExpShort = RegExp(r'youtu\.be\/([a-zA-Z0-9_-]{11})');
     final matchShort = regExpShort.firstMatch(url);
     if (matchShort != null && matchShort.groupCount >= 1) {
       return matchShort.group(1) ?? '';
     }
 
-    return url;
+    return '';
   }
 
   /// ビデオ再生画面に遷移
@@ -226,6 +251,18 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    context.go('${AppConstants.videoRoute}?videoId=$videoId');
+    // 有効なビデオIDかチェック（11文字の英数字）
+    final validIdPattern = RegExp(r'^[a-zA-Z0-9_-]{11}$');
+    if (!validIdPattern.hasMatch(videoId)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('有効なビデオIDではありません')));
+      return;
+    }
+
+    // MaterialPageRouteを使用して遷移
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => VideoScreen(videoId: videoId)),
+    );
   }
 }

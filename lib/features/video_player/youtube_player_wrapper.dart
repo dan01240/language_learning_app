@@ -1,107 +1,84 @@
 import 'package:flutter/material.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class YouTubePlayerWrapper extends StatefulWidget {
   final String videoId;
-  final YoutubePlayerController? controller;
+  final Function(YoutubePlayerController)? onControllerCreated;
+  final Function? onVideoEnd;
 
   const YouTubePlayerWrapper({
-    super.key,
+    Key? key,
     required this.videoId,
-    this.controller,
-  });
+    this.onControllerCreated,
+    this.onVideoEnd,
+  }) : super(key: key);
 
   @override
   State<YouTubePlayerWrapper> createState() => _YouTubePlayerWrapperState();
 }
 
 class _YouTubePlayerWrapperState extends State<YouTubePlayerWrapper> {
-  late YoutubePlayerController _controller;
+  late final YoutubePlayerController _controller;
   bool _isPlayerReady = false;
 
   @override
   void initState() {
     super.initState();
-
-    if (widget.videoId.isEmpty) {
-      return; // ビデオIDが空の場合は初期化しない
-    }
-
-    try {
-      _controller =
-          widget.controller ??
-          YoutubePlayerController(
-            initialVideoId: widget.videoId,
-            flags: const YoutubePlayerFlags(
-              autoPlay: true,
-              mute: false,
-              enableCaption: false,
-              hideThumbnail: false,
-            ),
-          );
-
-      _controller.addListener(_listener);
-    } catch (e) {
-      print('YouTubeプレーヤーの初期化中にエラーが発生しました: $e');
-    }
+    _initializePlayer();
   }
 
-  void _listener() {
-    if (_controller.value.isReady && !_isPlayerReady) {
-      _isPlayerReady = true;
-      setState(() {});
+  Future<void> _initializePlayer() async {
+    _controller = YoutubePlayerController.fromVideoId(
+      videoId: widget.videoId,
+      autoPlay: true,
+      params: const YoutubePlayerParams(
+        showControls: true,
+        showFullscreenButton: false,
+        desktopMode: false,
+        privacyEnhanced: true,
+        useHybridComposition: true,
+      ),
+    );
+
+    _controller.setFullScreenListener((isFullScreen) {
+      debugPrint('isFullScreen: $isFullScreen');
+    });
+
+    if (widget.onControllerCreated != null) {
+      widget.onControllerCreated!(_controller);
     }
+
+    // リスナーを追加
+    _controller.setFullScreenListener((isFullScreen) {
+      debugPrint('isFullScreen: $isFullScreen');
+    });
+
+    _controller.listen((event) {
+      if (event.playerState == PlayerState.ended && widget.onVideoEnd != null) {
+        widget.onVideoEnd!();
+      }
+
+      if (event.isReady && !_isPlayerReady) {
+        setState(() {
+          _isPlayerReady = true;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
-    // 外部から提供されたコントローラでない場合のみdispose
-    if (widget.controller == null) {
-      _controller.dispose();
-    }
+    _controller.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // ビデオIDが空またはコントローラーが初期化されていない場合
-    if (widget.videoId.isEmpty || _controller == null) {
-      return Container(
-        color: Colors.black,
-        child: const Center(
-          child: Text('ビデオを読み込めません', style: TextStyle(color: Colors.white)),
-        ),
-      );
-    }
-
-    return YoutubePlayerBuilder(
-      player: YoutubePlayer(
-        controller: _controller,
-        showVideoProgressIndicator: true,
-        progressIndicatorColor: Colors.teal,
-        progressColors: const ProgressBarColors(
-          playedColor: Colors.teal,
-          handleColor: Colors.tealAccent,
-        ),
-        onReady: () {
-          _isPlayerReady = true;
-        },
-        onEnded: (data) {
-          // 再生終了時の処理
-        },
-      ),
+    return YoutubePlayerScaffold(
+      controller: _controller,
+      aspectRatio: 16 / 9,
       builder: (context, player) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            player,
-            if (!_isPlayerReady)
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Center(child: CircularProgressIndicator()),
-              ),
-          ],
-        );
+        return player;
       },
     );
   }

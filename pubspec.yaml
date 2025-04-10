@@ -12,8 +12,8 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   
-  # YouTube player - 安定版を指定
-  youtube_player_flutter: ^8.1.2
+  # YouTube player - youtube_player_iframe を使用 (WebViewベースだがより安定)
+  youtube_player_iframe: ^4.0.4
   
   # State management
   provider: ^6.0.5
@@ -36,7 +36,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   
-  # Uncomment for assets
-  # assets:
-  #   - assets/images/
-  #   - assets/icons/
+  # アセットを有効化
+  assets:
+    - lib/data/sample_subtitles.json

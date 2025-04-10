@@ -1,3 +1,5 @@
+import 'package:provider/provider.dart';
+import 'package:language_learning_app/features/saved_words/saved_word_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:language_learning_app/features/dictionary/dictionary_service.dart';
 import 'package:language_learning_app/core/themes.dart';
@@ -152,7 +154,19 @@ class _DictionaryPopupState extends State<DictionaryPopup> {
           icon: const Icon(Icons.bookmark_border),
           label: const Text('保存'),
           onPressed: () {
-            // TODO: 単語を保存する機能を実装
+            // 単語を保存する処理
+            final savedWordRepo = Provider.of<SavedWordRepository>(
+              context,
+              listen: false,
+            );
+            // 単語の意味を取得（最初のエントリーを使用）
+            final meaning =
+                _entries.isNotEmpty
+                    ? _entries.first.meanings.join(', ')
+                    : '意味が見つかりませんでした';
+
+            savedWordRepo.saveWord(widget.word, meaning);
+
             Navigator.of(context).pop();
             ScaffoldMessenger.of(
               context,

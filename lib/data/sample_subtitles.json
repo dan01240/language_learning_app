@@ -1,0 +1,68 @@
+[
+    {
+      "start": 1.0,
+      "end": 4.0,
+      "text": "Hello, welcome to this language learning video.",
+      "translation": "こんにちは、この言語学習ビデオへようこそ。"
+    },
+    {
+      "start": 5.0,
+      "end": 8.0,
+      "text": "Today we will learn some basic vocabulary.",
+      "translation": "今日は基本的な語彙を学びます。"
+    },
+    {
+      "start": 9.0,
+      "end": 13.0,
+      "text": "Let's start with greetings and introductions.",
+      "translation": "挨拶と自己紹介から始めましょう。"
+    },
+    {
+      "start": 14.0,
+      "end": 17.0,
+      "text": "My name is Alex. Nice to meet you.",
+      "translation": "私の名前はアレックスです。よろしくお願いします。"
+    },
+    {
+      "start": 18.0,
+      "end": 22.0,
+      "text": "In English, we say 'Hello' or 'Hi' for greeting.",
+      "translation": "英語では、挨拶に「Hello」または「Hi」と言います。"
+    },
+    {
+      "start": 23.0,
+      "end": 27.0,
+      "text": "When meeting someone for the first time, say 'Nice to meet you'.",
+      "translation": "初めて会う人には「Nice to meet you」と言います。"
+    },
+    {
+      "start": 28.0,
+      "end": 33.0,
+      "text": "Let's practice these phrases together.",
+      "translation": "これらのフレーズを一緒に練習しましょう。"
+    },
+    {
+      "start": 34.0,
+      "end": 38.0,
+      "text": "Now, let's learn some common expressions.",
+      "translation": "では、いくつかの一般的な表現を学びましょう。"
+    },
+    {
+      "start": 39.0,
+      "end": 43.0,
+      "text": "Thank you - Use this to express gratitude.",
+      "translation": "Thank you - 感謝の気持ちを表すときに使います。"
+    },
+    {
+      "start": 44.0,
+      "end": 48.0,
+      "text": "I'm sorry - Use this to apologize.",
+      "translation": "I'm sorry - 謝罪するときに使います。"
+    },
+    {
+      "start": 49.0,
+      "end": 54.0,
+      "text": "Excuse me - Use this to get someone's attention politely.",
+      "translation": "Excuse me - 丁寧に人の注意を引くときに使います。"
+    }
+  ]
