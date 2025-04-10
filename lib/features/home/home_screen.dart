@@ -1,11 +1,10 @@
+// lib/features/home/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:language_learning_app/core/constants.dart';
 import 'package:language_learning_app/features/home/widgets/video_card.dart';
 import 'package:language_learning_app/features/saved_words/saved_word_repository.dart';
-import 'package:language_learning_app/features/saved_words/saved_word_screen.dart';
-import 'package:language_learning_app/features/video_player/video_screen.dart';
 
 /// ホーム画面
 class HomeScreen extends StatefulWidget {
@@ -50,16 +49,16 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.bookmark),
             onPressed: () {
-              // セーフな方法で保存済み単語画面に遷移
-              _navigateToSavedWords(context);
+              // GoRouterを使用して保存単語画面に遷移
+              context.go(AppConstants.savedWordsRoute);
             },
             tooltip: '保存した単語',
           ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              // セーフな方法で設定画面に遷移
-              _navigateToSettings(context);
+              // GoRouterを使用して設定画面に遷移
+              context.go(AppConstants.settingsRoute);
             },
             tooltip: '設定',
           ),
@@ -79,38 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-
-  /// 保存済み単語画面への遷移
-  void _navigateToSavedWords(BuildContext context) {
-    try {
-      // GoRouterが利用可能な場合はそれを使用
-      GoRouter.of(context).go(AppConstants.savedWordsRoute);
-    } catch (e) {
-      // GoRouterが利用できない場合はNavigatorを使用
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (context) => const SavedWordScreen()));
-    }
-  }
-
-  /// 設定画面への遷移
-  void _navigateToSettings(BuildContext context) {
-    try {
-      // GoRouterが利用可能な場合はそれを使用
-      GoRouter.of(context).go(AppConstants.settingsRoute);
-    } catch (e) {
-      // GoRouterが利用できない場合はNavigatorを使用
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder:
-              (context) => Scaffold(
-                appBar: AppBar(title: const Text('設定')),
-                body: const Center(child: Text('設定画面は開発中です')),
-              ),
-        ),
-      );
-    }
   }
 
   /// YouTube URL入力部分を構築
@@ -282,14 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    try {
-      // GoRouterが利用可能な場合はそれを使用
-      GoRouter.of(context).go('${AppConstants.videoRoute}?videoId=$videoId');
-    } catch (e) {
-      // GoRouterが利用できない場合はNavigatorを使用
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => VideoScreen(videoId: videoId)),
-      );
-    }
+    // GoRouterを使用してビデオ画面に遷移
+    context.go('${AppConstants.videoRoute}?videoId=$videoId');
   }
 }

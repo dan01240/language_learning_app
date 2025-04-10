@@ -12,11 +12,10 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   
-  # YouTube プレーヤー - より信頼性の高いネイティブ実装を使用
-  youtube_player_flutter: ^8.1.2
-  
-  # 外部アプリを開くための URL ランチャー
-  url_launcher: ^6.2.5
+  # YouTube データ抽出と動画再生
+  youtube_explode_dart: ^1.12.4
+  video_player: ^2.7.2
+  cached_network_image: ^3.3.0
   
   # State management
   provider: ^6.0.5
@@ -30,6 +29,9 @@ dependencies:
   
   # Navigation
   go_router: ^13.0.0
+  
+  # 外部アプリを開くための URL ランチャー
+  url_launcher: ^6.2.5
 
 dev_dependencies:
   flutter_test:
