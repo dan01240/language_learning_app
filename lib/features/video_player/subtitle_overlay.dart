@@ -1,3 +1,4 @@
+// lib/features/video_player/subtitle_overlay.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:language_learning_app/core/constants.dart';
@@ -5,17 +6,17 @@ import 'package:language_learning_app/core/themes.dart';
 import 'package:language_learning_app/features/video_player/models/subtitle.dart';
 import 'package:language_learning_app/features/dictionary/dictionary_popup.dart';
 
-/// ビデオプレーヤーの上に字幕を表示するオーバーレイウィジェット
 class SubtitleOverlay extends StatelessWidget {
-  /// 現在表示する字幕
   final Subtitle? currentSubtitle;
-
-  /// 字幕がタップされた時のコールバック
   final Function(String word)? onWordTap;
+  final bool showTranslation;
 
-  /// コンストラクタ
-  const SubtitleOverlay({Key? key, this.currentSubtitle, this.onWordTap})
-    : super(key: key);
+  const SubtitleOverlay({
+    Key? key,
+    this.currentSubtitle,
+    this.onWordTap,
+    this.showTranslation = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,7 @@ class SubtitleOverlay extends StatelessWidget {
               currentSubtitle!.text,
               AppTextStyles.subtitleText,
             ),
-            if (currentSubtitle!.translation != null)
+            if (showTranslation && currentSubtitle!.translation != null)
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: Text(
@@ -56,13 +57,12 @@ class SubtitleOverlay extends StatelessWidget {
     );
   }
 
-  /// タップ可能な字幕テキストを構築
   Widget _buildTappableText(
     BuildContext context,
     String text,
     TextStyle style,
   ) {
-    // 空白で単語を分割
+    // 単語に分割（英語固有の処理なので、他言語対応の場合は変更が必要）
     final words = text.split(' ');
 
     return RichText(
@@ -72,7 +72,6 @@ class SubtitleOverlay extends StatelessWidget {
               final index = entry.key;
               final word = entry.value;
 
-              // 単語を選択可能に
               return TextSpan(
                 text: word + (index < words.length - 1 ? ' ' : ''),
                 style: style,
@@ -91,10 +90,10 @@ class SubtitleOverlay extends StatelessWidget {
     );
   }
 
-  /// 辞書ポップアップを表示
   void _showDictionaryPopup(BuildContext context, String word) {
     // 単語から記号を削除
-    final cleanWord = word.replaceAll(RegExp(r'[^\w\s]'), '').trim();
+    final cleanWord =
+        word.replaceAll(RegExp(r'[^\w\s]'), '').trim().toLowerCase();
 
     if (cleanWord.isEmpty) return;
 
