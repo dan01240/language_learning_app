@@ -30,141 +30,78 @@ class AppRouter {
     routes: [
       GoRoute(
         path: AppConstants.homeRoute,
-        pageBuilder:
-            (context, state) => CustomTransitionPage(
-              key: state.pageKey,
-              child: const HomeScreen(),
-              transitionsBuilder: (
-                context,
-                animation,
-                secondaryAnimation,
-                child,
-              ) {
-                return FadeTransition(opacity: animation, child: child);
-              },
-            ),
+        builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
         path: AppConstants.videoRoute,
-        pageBuilder: (context, state) {
+        builder: (context, state) {
           final videoId = state.uri.queryParameters['videoId'] ?? '';
 
           // 無効なビデオIDの場合はホーム画面にリダイレクト
           if (!_isValidVideoId(videoId)) {
-            return CustomTransitionPage(
-              key: state.pageKey,
-              child: Scaffold(
-                appBar: AppBar(title: const Text('エラー')),
-                body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('無効なビデオIDです'),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('戻る'),
-                      ),
-                    ],
-                  ),
+            return Scaffold(
+              appBar: AppBar(title: const Text('エラー')),
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('無効なビデオIDです'),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('戻る'),
+                    ),
+                  ],
                 ),
               ),
-              transitionsBuilder: (
-                context,
-                animation,
-                secondaryAnimation,
-                child,
-              ) {
-                return FadeTransition(opacity: animation, child: child);
-              },
             );
           }
 
-          return CustomTransitionPage(
-            key: state.pageKey,
-            child: VideoScreen(videoId: videoId),
-            transitionsBuilder: (
-              context,
-              animation,
-              secondaryAnimation,
-              child,
-            ) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-          );
+          return VideoScreen(videoId: videoId);
         },
       ),
       GoRoute(
         path: AppConstants.savedWordsRoute,
-        pageBuilder:
-            (context, state) => CustomTransitionPage(
-              key: state.pageKey,
-              child: const SavedWordScreen(),
-              transitionsBuilder: (
-                context,
-                animation,
-                secondaryAnimation,
-                child,
-              ) {
-                return FadeTransition(opacity: animation, child: child);
-              },
-            ),
+        builder: (context, state) => const SavedWordScreen(),
       ),
-      // 設定画面のルートを追加
+      // 設定画面のルート
       GoRoute(
         path: AppConstants.settingsRoute,
-        pageBuilder:
-            (context, state) => CustomTransitionPage(
-              key: state.pageKey,
-              child: Scaffold(
-                appBar: AppBar(
-                  title: const Text('設定'),
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
+        builder:
+            (context, state) => Scaffold(
+              appBar: AppBar(
+                title: const Text('設定'),
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
-                body: const Center(child: Text('設定画面は開発中です')),
               ),
-              transitionsBuilder: (
-                context,
-                animation,
-                secondaryAnimation,
-                child,
-              ) {
-                return FadeTransition(opacity: animation, child: child);
-              },
+              body: const Center(child: Text('設定画面は開発中です')),
             ),
       ),
     ],
-    errorPageBuilder:
-        (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: Scaffold(
-            appBar: AppBar(title: const Text('エラー')),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('ページが見つかりませんでした'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('戻る'),
-                  ),
-                ],
-              ),
+    errorBuilder:
+        (context, state) => Scaffold(
+          appBar: AppBar(title: const Text('エラー')),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('ページが見つかりませんでした'),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('戻る'),
+                ),
+              ],
             ),
           ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
         ),
   );
 }
