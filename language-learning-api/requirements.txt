@@ -1,0 +1,9 @@
+fastapi==0.109.2
+uvicorn==0.27.1
+pydantic==2.5.2
+python-dotenv==1.0.0
+openai==1.13.3
+yt-dlp==2023.11.16
+ffmpeg-python==0.2.0
+httpx==0.26.0
+python-multipart==0.0.6
