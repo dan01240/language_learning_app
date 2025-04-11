@@ -2,20 +2,23 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-# Install system dependencies including ffmpeg
-RUN apt-get update && apt-get install -y \
+# システム依存ライブラリのインストール（ffmpegなど）
+RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# 依存関係のみを先にコピーしてキャッシュを活用
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
+# Python依存パッケージのインストール
+RUN pip install --no-cache-dir -r requirements.txt
+
+# アプリケーションコードをコピー（初回用、ホスト側のボリュームマウントで上書きされます）
 COPY . .
 
-# Expose port
+# ポート公開
 EXPOSE 8000
 
-# Command to run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Uvicornをホットリロードオプション付きで起動
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
